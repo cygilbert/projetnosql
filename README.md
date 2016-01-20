@@ -13,27 +13,19 @@ Dans notre cas, il s'agit de sélectionner des dates contigües :
 
 ## Schéma
 
-Page Web ---Requête (date)---> base (150 Go)  
-  ^                                |  
-  |                                |  
-  |                             30 jours  
-  |                              ~ 13 Go  
-  |                       Traitement (spark ?)  
-  |                                |  
-  |                                |  
-  ----------------------------------  
+Page Web / Notebook ---Requête (date)---> base (150 Go) ---30 jours (~13Go, traitement Spark)--> Page Web / Notebook
                       
 ## Plan d'action
 1. Installation 
 2. Chargement des données
-
+3. ...
 
 ## Commandes AWS
 ### nom AMI datastax
 ami-711ca91a
 ### Option lancement cluster
 <pre>
---clustername projet --totalnodes 3 --version community
+--clustername projet --totalnodes 5 --version community
 </pre>
 
 ### Commandes utiles
@@ -44,11 +36,20 @@ MASTER_DNS=ec2-52-90-82-183.compute-1.amazonaws.com
 ssh -i $KEYFILE ubuntu@$MASTER_DNS
 </pre>
 
+Uploader un script python
+<pre>
+KEYFILE=ChallengeMaster.pem
+MASTER_DNS=ec2-52-90-82-183.compute-1.amazonaws.com
+FILE=add_key.py
+scp -i $KEYFILE $FILE ubuntu@$MASTER_DNS:/home/ubuntu/
+</pre>
+
 
 Importer les données (**todo : commande  s3**):
 <pre>
 wget http://dumps.wikimedia.org/other/pagecounts-raw/2011/2011-01/pagecounts-20110101-000000.gz
 gunzip pagecounts-20110101-000000.gz
+python add_key.py
 </pre>
 
 
