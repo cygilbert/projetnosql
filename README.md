@@ -65,6 +65,7 @@ create keyspace tp_nosql WITH REPLICATION = { 'class' : 'SimpleStrategy', 'repli
 use tp_nosql;
 create table wikipediadata (date timestamp, page text, views bigint, weights bigint, lang text, PRIMARY KEY (date,page)) ;
 COPY tp_nosql.wikipediadata (dadte, lang, page, views, weights) FROM pagecounts-20110101-000000 WITH DELIMITER = ' ';
+COPY music.imported_songs from 'songs-20140603.csv' WITH DELIMITER = ' ';
 </pre>
 
 
