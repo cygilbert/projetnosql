@@ -23,23 +23,56 @@ Page Web / Notebook ---Requête (date)---> base (150 Go) ---30 jours (~13Go, tra
 ## Commandes AWS
 ### nom AMI datastax
 ami-711ca91a
+machine test :  5 x m3x2Large
+### Instance type
+|Instance Type | ECUs | vCPUsMemory (GiB)GiB | Instance Storage (GB)GB | EBS-Optimized Available | Network Performance |
+| --- | --- | --- | --- | --- | --- |
+| m3.2xlarge | 26 | 8 | 30 | 2 x 80 | Yes | High |
+
 ### Option lancement cluster
-<pre>
---clustername projet --totalnodes 5 --version community
-</pre>
+```
+--clustername projet --totalnodes 5 --version enterprise --username ***@telecom-paristech.fr --password ***  --analyticsnodes 5 --cfsreplicationfactor 2
+```
+
+### Security groups
+Cf. http://docs.datastax.com/en/datastax_enterprise/4.8/datastax_enterprise/install/installAMIsecurity.html
+Ajouter 8080 pour Zeppelin
+
 
 ### Commandes utiles
 Se connecter en ssh
-<pre>
-KEYFILE=ChallengeMaster.pem
-MASTER_DNS=ec2-52-90-82-183.compute-1.amazonaws.com
+```
+KEYFILE=ProjetNoSQL.pem
+chmod 400 $KEYFILE
+MASTER_DNS=ec2-54-164-158-165.compute-1.amazonaws.com
 ssh -i $KEYFILE ubuntu@$MASTER_DNS
-</pre>
+```
 
+### Zeppelin
+
+#### Install & build
+```
+sudo apt-get install node git openjdk-7-jdk npm libfontconfig -y
+wget http://www.eu.apache.org/dist/maven/maven-3/3.3.3/binaries/apache-maven-3.3.3-bin.tar.gz
+sudo tar -zxf apache-maven-3.3.3-bin.tar.gz -C /usr/local/
+sudo ln -s /usr/local/apache-maven-3.3.3/bin/mvn /usr/local/bin/mvn
+sudo ln –s /usr/loca/bin/nodejs /usr/local/bin/node
+git clone https://github.com/apache/incubator-zeppelin.git
+cd incubator-zeppelin
+node --version
+mvn --version
+export MAVEN_OPTS="-Xmx2g -XX:MaxPermSize=1024m"
+mvn clean package -DskipTests -Pcassandra-spark-1.4 -Ppyspark 
+```
+
+#### Launch
+```
+./bin/zeppelin-daemon.sh start
+```
+
+Puis se connecter à **http://localhost:8080/**
 Uploader un script python
 <pre>
-KEYFILE=ChallengeMaster.pem
-MASTER_DNS=ec2-52-90-82-183.compute-1.amazonaws.com
 FILE=add_key.py
 scp -i $KEYFILE $FILE ubuntu@$MASTER_DNS:/home/ubuntu/
 </pre>
