@@ -44,8 +44,64 @@ Se connecter en ssh
 ```
 KEYFILE=ProjetNoSQL.pem
 chmod 400 $KEYFILE
-MASTER_DNS=ec2-54-164-158-165.compute-1.amazonaws.com
+MASTER_DNS=ec2-54-210-109-141.compute-1.amazonaws.com
 ssh -i $KEYFILE ubuntu@$MASTER_DNS
+```
+
+### Charger les données
+```
+Cf. https://drive.google.com/file/d/0B9Ikx0xPv9gJczJEdlptVGNWcVU/view
+wget http://s3.amazonaws.com/ec2-downloads/ec2-api-tools.zip
+unzip ec2-api-tools.zip
+export PATH=$PATH:/home/ubuntu/ec2-api-tools-1.7.5.1/bin
+export EC2_HOME=/home/ubuntu/ec2-api-tools-1.7.5.1
+ec2-create-volume --snapshot snap-f57dec9a -z us-east-1a -O *** -W  ***
+```
+On note: 
+vol-7e8989de 
+
+```
+ec2-attach-volume vol-7e8989de -i i-2c1e69a5 -d /dev/sdf -O *** -W *** 
+```
+
+### IPython
+http://blog.insightdatalabs.com/jupyter-on-apache-spark-step-by-step/
+```
+sudo apt-get update
+sudo pip install ipython[notebook]
+echo "export AWS_ACCESS_KEY_ID=***" >> /home/ubuntu/.profile
+echo "export AWS_SECRET_ACCESS_KEY=***" >> /home/ubuntu/.profile
+source /home/ubuntu/.profile
+PYSPARK_DRIVER_PYTHON=ipython 
+PYSPARK_DRIVER_PYTHON_OPTS="notebook --no-browser --port=8880" pyspark --master $SPARK_MASTER
+```
+
+
+http://blog.cloudera.com/blog/2014/08/how-to-use-ipython-notebook-with-apache-spark/
+```
+sudo apt-get install python-markupsafe python-zmq python-singledispatch -y
+sudo apt-get install python-jsonschema -y
+sudo pip install backports_abc certifi
+sudo pip install ipython
+export SPARK_HOME=/usr/share/dse/spark/
+export PYSPARK_SUBMIT_ARGS='--master spark://172.31.15.112:7077' 
+ipython profile create pyspark
+IPYTHON_CONFIG=/home/ubuntu/.ipython/profile_pyspark/ipython_config.py
+echo "c = get_config()" >> $IPYTHON_CONFIG
+echo "c.NotebookApp.ip = '*'" >> $IPYTHON_CONFIG
+echo "c.NotebookApp.open_browser = False" >> $IPYTHON_CONFIG
+echo "c.NotebookApp.port = 8880" >> $IPYTHON_CONFIG
+echo "PWDFILE='~/.ipython/profile_pyspark/nbpasswd.txt'" >> $IPYTHON_CONFIG
+echo "c.NotebookApp.password = open(PWDFILE).read().strip()" >> $IPYTHON_CONFIG
+vim ~/.ipython/profile_pyspark/ipython_config.py
+python -c 'from IPython.lib import passwd; print passwd()' > ~/.ipython/profile_pyspark/nbpasswd.txt
+ipython notebook --profile=pyspark
+```
+
+```
+FILE=00-pyspark-setup.py
+~/.ipython/profile_pyspark/startup/
+scp -i $KEYFILE $FILE ubuntu@$MASTER_DNS:/home/ubuntu/.ipython/profile_pyspark/startup/
 ```
 
 ### Zeppelin
@@ -53,16 +109,18 @@ ssh -i $KEYFILE ubuntu@$MASTER_DNS
 #### Install & build
 ```
 sudo apt-get install node git openjdk-7-jdk npm libfontconfig -y
-wget http://www.eu.apache.org/dist/maven/maven-3/3.3.3/binaries/apache-maven-3.3.3-bin.tar.gz
-sudo tar -zxf apache-maven-3.3.3-bin.tar.gz -C /usr/local/
-sudo ln -s /usr/local/apache-maven-3.3.3/bin/mvn /usr/local/bin/mvn
-sudo ln –s /usr/loca/bin/nodejs /usr/local/bin/node
+wget http://apache.crihan.fr/dist/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz
+sudo tar -zxf apache-maven-3.3.9-bin.tar.gz -C /usr/local/
+sudo ln -s /usr/local/apache-maven-3.3.9/bin/mvn /usr/local/bin/mvn
+sudo ln –s /usr/local/bin/nodejs /usr/local/bin/node
+sudo ln -s /usr/bin/nodejs /usr/bin/node
+export MAVEN_OPTS="-Xmx2g -XX:MaxPermSize=1024m"
 git clone https://github.com/apache/incubator-zeppelin.git
 cd incubator-zeppelin
 node --version
 mvn --version
-export MAVEN_OPTS="-Xmx2g -XX:MaxPermSize=1024m"
 mvn clean package -DskipTests -Pcassandra-spark-1.4 -Ppyspark 
+echo "export SPARK_HOME=/usr/share/dse/spark/" >> ./conf/zeppelin-env.sh
 ```
 
 #### Launch
@@ -70,7 +128,13 @@ mvn clean package -DskipTests -Pcassandra-spark-1.4 -Ppyspark
 ./bin/zeppelin-daemon.sh start
 ```
 
-Puis se connecter à **http://localhost:8080/**
+Puis se connecter à **http://$MASTER_DNS:8080/**
+
+### Lancer simplement PySpark
+```
+IPYTHON=1 dse pyspark
+```
+
 Uploader un script python
 <pre>
 FILE=add_key.py
