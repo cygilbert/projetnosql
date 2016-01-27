@@ -42,26 +42,29 @@ Ajouter 8080 pour Zeppelin
 ### Commandes utiles
 Se connecter en ssh
 ```
-KEYFILE=ProjetNoSQL.pem
+KEYFILE=nosql.pem
 chmod 400 $KEYFILE
-MASTER_DNS=ec2-54-210-109-141.compute-1.amazonaws.com
+MASTER_DNS=ec2-54-152-75-201.compute-1.amazonaws.com
 ssh -i $KEYFILE ubuntu@$MASTER_DNS
 ```
 
 ### Charger les données
-```
 Cf. https://drive.google.com/file/d/0B9Ikx0xPv9gJczJEdlptVGNWcVU/view
+```
+AWS_ACCESS_KEY_ID=XXX
+AWS_SECRET_ACCESS_KEY=XXX
 wget http://s3.amazonaws.com/ec2-downloads/ec2-api-tools.zip
 unzip ec2-api-tools.zip
 export PATH=$PATH:/home/ubuntu/ec2-api-tools-1.7.5.1/bin
 export EC2_HOME=/home/ubuntu/ec2-api-tools-1.7.5.1
-ec2-create-volume --snapshot snap-f57dec9a -z us-east-1a -O *** -W  ***
+ec2-create-volume --snapshot snap-f57dec9a -z us-east-1a -O $AWS_ACCESS_KEY_ID -W $AWS_SECRET_ACCESS_KEY
 ```
-On note: 
-vol-7e8989de 
 
+Noter le volume_id. Puis:
 ```
-ec2-attach-volume vol-7e8989de -i i-2c1e69a5 -d /dev/sdf -O *** -W *** 
+VOLUME_ID=vol-ce72716e 
+INSTANCE_ID=i-dc691f55
+ec2-attach-volume $VOLUME_ID -i $INSTANCE_ID -d /dev/sdf -O $AWS_ACCESS_KEY_ID -W $AWS_SECRET_ACCESS_KEY
 ```
 
 ### IPython
@@ -79,12 +82,12 @@ PYSPARK_DRIVER_PYTHON_OPTS="notebook --no-browser --port=8880" pyspark --master 
 
 http://blog.cloudera.com/blog/2014/08/how-to-use-ipython-notebook-with-apache-spark/
 ```
-sudo apt-get install python-markupsafe python-zmq python-singledispatch -y
-sudo apt-get install python-jsonschema -y
-sudo pip install backports_abc certifi
-sudo pip install ipython
+#sudo apt-get install python-markupsafe python-zmq python-singledispatch -y
+#sudo apt-get install python-jsonschema -y
+#sudo pip install backports_abc certifi
+#sudo pip install ipython
 export SPARK_HOME=/usr/share/dse/spark/
-export PYSPARK_SUBMIT_ARGS='--master spark://172.31.15.112:7077' 
+export PYSPARK_SUBMIT_ARGS="--master 'spark://172.31.6.134:7077'" 
 ipython profile create pyspark
 IPYTHON_CONFIG=/home/ubuntu/.ipython/profile_pyspark/ipython_config.py
 echo "c = get_config()" >> $IPYTHON_CONFIG
@@ -100,8 +103,11 @@ ipython notebook --profile=pyspark
 
 ```
 FILE=00-pyspark-setup.py
-~/.ipython/profile_pyspark/startup/
 scp -i $KEYFILE $FILE ubuntu@$MASTER_DNS:/home/ubuntu/.ipython/profile_pyspark/startup/
+```
+
+```
+PYSPARK_DRIVER_PYTHON=ipython PYSPARK_DRIVER_PYTHON_OPTS="notebook" dse pyspark
 ```
 
 ### Zeppelin
