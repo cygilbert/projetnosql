@@ -67,6 +67,67 @@ INSTANCE_ID=i-dc691f55
 ec2-attach-volume $VOLUME_ID -i $INSTANCE_ID -d /dev/sdf -O $AWS_ACCESS_KEY_ID -W $AWS_SECRET_ACCESS_KEY
 ```
 
+### Jupyter Notebook
+Telechargement d'Anaconda (Accepter les divers termes)
+'''
+wget https://3230d63b5fc54e62148e-c95ac804525aac4b6dba79b00b39d1d3.ssl.cf1.rackcdn.com/Anaconda2-2.4.1-Linux-x86_64.sh
+bash Anaconda2-2.4.1-Linux-x86_64.sh
+'''
+Verifier la version de python
+'''
+which python
+'''
+Si, le chemin ne liste pas ".../anaconda2/...", utilisez cette commande
+'''
+source .bashrc
+'''
+Creation d'un mote de passe, (copier le mdp: sha1:....)
+'''
+ipython
+In [1]:from IPython.lib import passwd
+In [2]:passwd()
+'''
+Creation de la config de jupyter
+'''
+$ jupyter notebook --generate-config
+'''
+Creation du certificat
+'''
+$ mkdir certs
+$ cd certs
+$ sudo openssl req -x509 -nodes -days 365 -newkey rsa:1024 -keyout mycert.pem -out mycert.pem
+'''
+Accéder au config
+'''
+$ cd ~/.jupyter/
+$ vi jupyter_notebook_config.py
+'''
+Ajouter ce texte dans le document(ne pas oublier le mdp et le port)
+'''
+c = get_config()
+
+# Kernel config
+c.IPKernelApp.pylab = 'inline'  # if you want plotting support always in your notebook
+
+# Notebook config
+c.NotebookApp.certfile = u'/home/ubuntu/certs/mycert.pem' #location of your certificate file
+c.NotebookApp.ip = '*'
+c.NotebookApp.open_browser = False  #so that the ipython notebook does not opens up a browser by default
+c.NotebookApp.password = u'sha1:68c136a5b064...'  #the encrypted password we generated above
+# It is a good idea to put it on a known, fixed port
+c.NotebookApp.port = 8888
+'''
+Creation du dossier de notebook
+'''
+$ cd ~
+$ mkdir Notebooks
+$ cd Notebooks
+'''
+Lancement du notebook
+'''
+$ jupyter notebook
+'''
+
 ### IPython
 http://blog.insightdatalabs.com/jupyter-on-apache-spark-step-by-step/
 ```
