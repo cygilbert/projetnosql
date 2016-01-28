@@ -123,7 +123,7 @@ $ cd ~
 $ mkdir Notebooks
 $ cd Notebooks
 ```
-Lancement du notebook
+Lancement du notebook (ecrivez https a lieu de http)
 ```
 $ jupyter notebook
 ```
