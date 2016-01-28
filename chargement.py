@@ -1,21 +1,22 @@
 from cassandra.cluster import Cluster
 import datetime
 from pyspark import SparkContext, SparkConf
-from os import walk
+import os
 import time
 import datetime
+import gzip
+
 
 myKeySpace = "test_frompython"
 myTable = "wikipediaData"
 myPath = "/home/largo/workspace/telecom/basesnosql/data"
-masterSpark = "local[6]"
-formatFile = "pagecounts-%Y%m%d-%H%M%S"
+masterSpark = "local[1]"
+formatFile = "pagecounts-%Y%m%d-%H%M%S.gz"
+
 
 listFiles = []
-for (dirpath, dirnames, filenames) in walk(myPath):
-    listFiles.extend(filenames)
-    break
-print (listFiles)
+for f in os.listdir(myPath):
+        listFiles.append(f)
 
 def initCluster():
 	cluster = Cluster(['ec2-54-152-75-201.compute-1.amazonaws.com'])
@@ -35,7 +36,7 @@ def process_data(inputFile):
 	session = cluster.connect()
 	session.set_keyspace(myKeySpace)
 	date = datetime.datetime.strptime(inputFile, formatFile)
-	fo=open(myPath + "/" + inputFile,encoding='utf-8', errors='ignore')
+	fo=gzip.open(myPath + "/" + inputFile, 'r')
 	for line in fo:
 		#print (line)
 		session.execute("INSERT INTO " + myTable + " (date, page,views,weights,lang) VALUES (%s,%s,%s,%s,%s)",(date,line.split(" ")[1],int(float(line.split(" ")[2])),int(float(line.split(" ")[3])),line.split(" ")[0]))
