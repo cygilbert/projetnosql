@@ -116,17 +116,17 @@ c.NotebookApp.open_browser = False  #so that the ipython notebook does not opens
 c.NotebookApp.password = u'sha1:68c136a5b064...'  #the encrypted password we generated above
 # It is a good idea to put it on a known, fixed port
 c.NotebookApp.port = 8888
-'''
+```
 Creation du dossier de notebook
-'''
+```
 $ cd ~
 $ mkdir Notebooks
 $ cd Notebooks
-'''
+```
 Lancement du notebook
-'''
+```
 $ jupyter notebook
-'''
+```
 
 ### IPython
 http://blog.insightdatalabs.com/jupyter-on-apache-spark-step-by-step/
