@@ -28,6 +28,7 @@ machine test :  5 x m3x2Large
 |Instance Type | ECUs | vCPUsMemory (GiB)GiB | Instance Storage (GB)GB | EBS-Optimized Available | Network Performance |
 | --- | --- | --- | --- | --- | --- |
 | m3.2xlarge | 26 | 8 | 30 | 2 x 80 | Yes | High |
+| m3.xlarge | 4 | 13 | 15 | 2 x 40 SSD | Yes | High |
 
 ### Option lancement cluster
 ```
@@ -42,10 +43,12 @@ Ajouter 8080 pour Zeppelin
 ### Commandes utiles
 Se connecter en ssh
 ```
-KEYFILE=nosql.pem
+KEYFILE=cluster.pem
 chmod 400 $KEYFILE
-MASTER_DNS=ec2-54-152-75-201.compute-1.amazonaws.com
+MASTER_DNS=ec2-54-165-93-154.compute-1.amazonaws.com
+WORKER_DNS=ec2-54-152-112-206.compute-1.amazonaws.com
 ssh -i $KEYFILE ubuntu@$MASTER_DNS
+ssh -i $KEYFILE ubuntu@$WORKER_DNS
 ```
 
 ### Charger les données
@@ -67,15 +70,37 @@ INSTANCE_ID=i-dc691f55
 ec2-attach-volume $VOLUME_ID -i $INSTANCE_ID -d /dev/sdf -O $AWS_ACCESS_KEY_ID -W $AWS_SECRET_ACCESS_KEY
 ```
 
+### Config SPARK
+On veut augmenter les ressources allouées à SPARK.   
+
+On envoit le fichier de configuration à **tous** les noeuds et on 
+relance les workers spark:
+```
+for DNS in $MASTER_DNS $WORKER_DNS
+do
+scp -i $KEYFILE spark-env.sh ubuntu@$DNS:/home/ubuntu/
+ssh -i $KEYFILE ubuntu@$DNS sudo cp spark-env.sh /etc/dse/spark/
+done
+```
+Il faut relancer spark sur les noeuds. Pour le moment commande non trouvée (*dse sparkworker restart* comme suggéré ici http://www.datastax.com/dev/blog/common-spark-troubleshooting n'existe pas), on redémarre donc manuellement le noeud entier :(.
+
+
+
+
+
 ### Jupyter Notebook
-Telechargement d'Anaconda (Accepter les divers termes)
+Telechargement d'Anaconda (Accepter les divers termes) et installation sur **tous** les noeuds.
 ```
 wget https://3230d63b5fc54e62148e-c95ac804525aac4b6dba79b00b39d1d3.ssl.cf1.rackcdn.com/Anaconda2-2.4.1-Linux-x86_64.sh
-bash Anaconda2-2.4.1-Linux-x86_64.sh
+bash Anaconda2-2.4.1-Linux-x86_64.sh -b
+echo export PATH=/home/ubuntu/anaconda2/bin/:$PATH >> /home/ubuntu/.bashrc
+source ~/.bashrc
+pip install cqlsh
 ```
 Verifier la version de python
 ```
 which python
+which ipython
 ```
 Si, le chemin ne liste pas ".../anaconda2/...", utilisez cette commande
 ```
@@ -103,6 +128,7 @@ $ cd ~/.jupyter/
 $ vi jupyter_notebook_config.py
 ```
 Ajouter ce texte dans le document(ne pas oublier le mdp et le port)
+
 ```
 c = get_config()
 
@@ -115,106 +141,27 @@ c.NotebookApp.ip = '*'
 c.NotebookApp.open_browser = False  #so that the ipython notebook does not opens up a browser by default
 c.NotebookApp.password = u'sha1:68c136a5b064...'  #the encrypted password we generated above
 # It is a good idea to put it on a known, fixed port
-c.NotebookApp.port = 8888
+c.NotebookApp.port = 8889
 ```
+
 Creation du dossier de notebook
 ```
 $ cd ~
 $ mkdir Notebooks
 $ cd Notebooks
 ```
+
 Lancement du notebook (ecrivez https a lieu de http)
 ```
-$ jupyter notebook
+source ~/.bashrc
+PYSPARK_WORKER_PYTHON=python PYSPARK_DRIVER_PYTHON=ipython PYSPARK_DRIVER_PYTHON_OPTS="notebook" nohup dse pyspark --driver-memory 4G  --executor-memory 3G &
 ```
 
-### IPython
-http://blog.insightdatalabs.com/jupyter-on-apache-spark-step-by-step/
+Pour arrêter, killer le process dont on trouve l'ID par :
 ```
-sudo apt-get update
-sudo pip install ipython[notebook]
-echo "export AWS_ACCESS_KEY_ID=***" >> /home/ubuntu/.profile
-echo "export AWS_SECRET_ACCESS_KEY=***" >> /home/ubuntu/.profile
-source /home/ubuntu/.profile
-PYSPARK_DRIVER_PYTHON=ipython 
-PYSPARK_DRIVER_PYTHON_OPTS="notebook --no-browser --port=8880" pyspark --master $SPARK_MASTER
+lsof nohup.out
 ```
 
-
-http://blog.cloudera.com/blog/2014/08/how-to-use-ipython-notebook-with-apache-spark/
-```
-#sudo apt-get install python-markupsafe python-zmq python-singledispatch -y
-#sudo apt-get install python-jsonschema -y
-#sudo pip install backports_abc certifi
-#sudo pip install ipython
-export SPARK_HOME=/usr/share/dse/spark/
-export PYSPARK_SUBMIT_ARGS="--master 'spark://172.31.6.134:7077'" 
-ipython profile create pyspark
-IPYTHON_CONFIG=/home/ubuntu/.ipython/profile_pyspark/ipython_config.py
-echo "c = get_config()" >> $IPYTHON_CONFIG
-echo "c.NotebookApp.ip = '*'" >> $IPYTHON_CONFIG
-echo "c.NotebookApp.open_browser = False" >> $IPYTHON_CONFIG
-echo "c.NotebookApp.port = 8880" >> $IPYTHON_CONFIG
-echo "PWDFILE='~/.ipython/profile_pyspark/nbpasswd.txt'" >> $IPYTHON_CONFIG
-echo "c.NotebookApp.password = open(PWDFILE).read().strip()" >> $IPYTHON_CONFIG
-vim ~/.ipython/profile_pyspark/ipython_config.py
-python -c 'from IPython.lib import passwd; print passwd()' > ~/.ipython/profile_pyspark/nbpasswd.txt
-ipython notebook --profile=pyspark
-```
-
-```
-FILE=00-pyspark-setup.py
-scp -i $KEYFILE $FILE ubuntu@$MASTER_DNS:/home/ubuntu/.ipython/profile_pyspark/startup/
-```
-
-```
-PYSPARK_DRIVER_PYTHON=ipython PYSPARK_DRIVER_PYTHON_OPTS="notebook" dse pyspark
-```
-
-### Zeppelin
-
-#### Install & build
-```
-sudo apt-get install node git openjdk-7-jdk npm libfontconfig -y
-wget http://apache.crihan.fr/dist/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz
-sudo tar -zxf apache-maven-3.3.9-bin.tar.gz -C /usr/local/
-sudo ln -s /usr/local/apache-maven-3.3.9/bin/mvn /usr/local/bin/mvn
-sudo ln –s /usr/local/bin/nodejs /usr/local/bin/node
-sudo ln -s /usr/bin/nodejs /usr/bin/node
-export MAVEN_OPTS="-Xmx2g -XX:MaxPermSize=1024m"
-git clone https://github.com/apache/incubator-zeppelin.git
-cd incubator-zeppelin
-node --version
-mvn --version
-mvn clean package -DskipTests -Pcassandra-spark-1.4 -Ppyspark 
-echo "export SPARK_HOME=/usr/share/dse/spark/" >> ./conf/zeppelin-env.sh
-```
-
-#### Launch
-```
-./bin/zeppelin-daemon.sh start
-```
-
-Puis se connecter à **http://$MASTER_DNS:8080/**
-
-### Lancer simplement PySpark
-```
-IPYTHON=1 dse pyspark
-```
-
-Uploader un script python
-<pre>
-FILE=add_key.py
-scp -i $KEYFILE $FILE ubuntu@$MASTER_DNS:/home/ubuntu/
-</pre>
-
-
-Importer les données (**todo : commande  s3**):
-<pre>
-wget http://dumps.wikimedia.org/other/pagecounts-raw/2011/2011-01/pagecounts-20110101-000000.gz
-gunzip pagecounts-20110101-000000.gz
-python add_key.py
-</pre>
 
 
 Lancer le shell Cassandra :
