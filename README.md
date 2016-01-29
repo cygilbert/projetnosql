@@ -174,9 +174,9 @@ Commandes Cassandra :
 <pre>
 create keyspace tp_nosql WITH REPLICATION = { 'class' : 'SimpleStrategy', 'replication_factor' : 2 };
 use tp_nosql;
-create table wikipediadata (date timestamp, page text, views bigint, weights bigint, lang text, PRIMARY KEY (date,page)) ;
+create table wikipediadata (date timestamp, page text, views bigint, lang text, PRIMARY KEY (date, lang, page)) ;
 COPY tp_nosql.wikipediadata (dadte, lang, page, views, weights) FROM pagecounts-20110101-000000 WITH DELIMITER = ' ';
-COPY music.imported_songs from 'songs-20140603.csv' WITH DELIMITER = ' ';
+COPY projet.wikipediadata from 'pagecounts-20110101-000000' WITH DELIMITER = ' ';
 </pre>
 
 
