@@ -175,10 +175,11 @@ Commandes Cassandra pour créer la table:
 ```
 create keyspace projet WITH REPLICATION = { 'class' : 'SimpleStrategy', 'replication_factor' : 2 };
 use projet;
-create table wikipediadata (datetime timestamp, projectcode text,  page text, views bigint, weight bigint, PRIMARY KEY (datetime, page)) ;
+create table projet.wikidata (datetime timestamp, page text, projectcode text, views bigint, PRIMARY KEY (datetime, page, projectcode)) ;
+```
+
+Quitter le shell et re-binder le PATH python to Anaconda
+```
 exit
 source /home/ubuntu/.bashrc
 ```
-
-
-                                                     
