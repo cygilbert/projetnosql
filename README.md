@@ -80,9 +80,9 @@ for DNS in $MASTER_DNS $WORKER_DNS
 do
 scp -i $KEYFILE spark-env.sh ubuntu@$DNS:/home/ubuntu/
 ssh -i $KEYFILE ubuntu@$DNS sudo cp spark-env.sh /etc/dse/spark/
+ssh -i $KEYFILE ubuntu@$DNS dsetool sparkworker restart
 done
 ```
-Il faut relancer spark sur les noeuds. Pour le moment commande non trouvée (*dse sparkworker restart* comme suggéré ici http://www.datastax.com/dev/blog/common-spark-troubleshooting n'existe pas), on redémarre donc manuellement le noeud entier :(.
 
 
 
@@ -165,19 +165,20 @@ lsof nohup.out
 
 
 Lancer le shell Cassandra :
-<pre>
+```
+export PATH=/usr/bin/:$PATH
 cqlsh
-</pre>
+```
 
 
-Commandes Cassandra :
-<pre>
-create keyspace tp_nosql WITH REPLICATION = { 'class' : 'SimpleStrategy', 'replication_factor' : 2 };
-use tp_nosql;
-create table wikipediadata (date timestamp, page text, views bigint, weights bigint, lang text, PRIMARY KEY (date,page)) ;
-COPY tp_nosql.wikipediadata (dadte, lang, page, views, weights) FROM pagecounts-20110101-000000 WITH DELIMITER = ' ';
-COPY music.imported_songs from 'songs-20140603.csv' WITH DELIMITER = ' ';
-</pre>
+Commandes Cassandra pour créer la table:
+```
+create keyspace projet WITH REPLICATION = { 'class' : 'SimpleStrategy', 'replication_factor' : 2 };
+use projet;
+create table wikipediadata (datetime timestamp, projectcode text,  page text, views bigint, weight bigint, PRIMARY KEY (datetime, page)) ;
+exit
+source /home/ubuntu/.bashrc
+```
 
 
                                                      
