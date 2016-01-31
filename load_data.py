@@ -16,6 +16,9 @@ sc = SparkContext(conf=conf)
 sql = SQLContext(sc)
 
 
+# Constantes du script:
+N = 15 # nombre de fichiers à lire en meme temps
+
 # On récupère la liste des fichiers
 
 
@@ -115,10 +118,8 @@ def create_df(datafile_datetime):
 
 
 
-# Constantes du script:
-N = 15 # nombre de fichiers à lire en meme temps
-L = len(datafiles_datetimes) # nombre total de fichiers a lire
 
+L = len(datafiles_datetimes) # nombre total de fichiers a lire
 i = 0
 while i < L:
     # indices de depart et de fin
@@ -129,7 +130,7 @@ while i < L:
     
     t0 = time()
     # Lecture des fichiers
-    rdd = sc.parallelize(datafiles_datetimes[first:last], 10)
+    rdd = sc.parallelize(datafiles_datetimes[first:last], N)
     rdd2 = rdd.flatMap(create_df)
     df = sql.createDataFrame(rdd2, 
             ['projectcode', 'page', 'views', 'day', 'hour'])
