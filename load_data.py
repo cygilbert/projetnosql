@@ -17,7 +17,7 @@ sql = SQLContext(sc)
 
 
 # Constantes du script:
-N = 15 # nombre de fichiers à lire en meme temps
+N = 30 # nombre de fichiers à lire en meme temps
 
 # On récupère la liste des fichiers
 
@@ -111,7 +111,11 @@ def create_df(datafile_datetime):
                      names=['projectcode', 'page', 'views'], usecols=[0, 1, 2], 
                      na_values=None, keep_default_na=False,
                      dtype={'projectcode': pd.np.str, 'page': pd.np.str, 'views': pd.np.int64})
+    # on supprime les pages non-wikipedia
     df = df[~df.projectcode.str.contains('\.')]
+    # on supprime les pages avec 1 seule vue (puisqu'on veut le trend, 1 et
+    # 0 ce n'est pas très différent)
+    df = df[df.views > 1]
     df['day'] = day
     df['hour'] = hour
     return df.values.tolist()
