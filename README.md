@@ -31,7 +31,7 @@ machine test :  5 x m3x2Large
 | m3.xlarge | 4 | 13 | 15 | 2 x 40 SSD | Yes | High |
 
 ### Option lancement cluster
-```
+```bash
 --clustername projet --totalnodes 5 --version enterprise --username ***@telecom-paristech.fr --password ***  --analyticsnodes 5 --cfsreplicationfactor 2
 ```
 
@@ -42,7 +42,7 @@ Ajouter 8080 pour Zeppelin
 
 ### Variables utiles
 On les définit dans un fichier **projet-env.sh** qui a cette forme:
-```
+```bash
 KEYFILE=ProjetNoSQL.pem
 chmod 400 $KEYFILE
 MASTER_DNS=ec2-54-165-93-154.compute-1.amazonaws.com
@@ -53,7 +53,7 @@ WORKER4_DNS=
 ```
 
 Par ailleurs on configure le fichier **spark-env.sh** que l'on aura au préalable éventuellement téléchargé depuis l'un des noeuds:
-```
+```bash
 scp -i $KEYFILE ubuntu@$MASTER_DNS:/etc/dse/spark/spark-env.sh spark-env.sh.template
 ```
 
@@ -73,10 +73,11 @@ export PYSPARK_DRIVER_PYTHON_OPTS="notebook"
 
 ### Commandes utiles
 Se connecter en ssh
-```
+```bash
 source projet-env.sh
 ssh -i $KEYFILE ubuntu@$MASTER_DNS
 ssh -i $KEYFILE ubuntu@$WORKER1_DNS
+ssh -i $KEYFILE ubuntu@$WORKER3_DNS
 ```
 
 
@@ -86,7 +87,7 @@ On veut augmenter les ressources allouées à SPARK.
 
 On envoit le fichier de configuration à **tous** les noeuds et on 
 relance les workers spark:
-```
+```bash
 for DNS in $MASTER_DNS $WORKER1_DNS $WORKER2_DNS $WORKER3_DNS $WORKER4_DNS
 do
 scp -i $KEYFILE spark-env.sh ubuntu@$DNS:/home/ubuntu/
@@ -184,14 +185,16 @@ cd projetnosql
 
 Lancement du notebook (écrivez https a lieu de http)
 ```bash
-source ~/.bashrc
 nohup dse pyspark --driver-memory 1G  --executor-memory 3G &
-
-nohup dse pyspark &
 ```
 
 Pour arrêter, killer le process dont on trouve l'ID par :
 ```bash
 lsof nohup.out
+kill 23158
 ```
 
+Pour lancer un script:
+```bash
+nohup dse spark-sparksubmit --driver-memory 1G  --executor-memory 3G &
+```
