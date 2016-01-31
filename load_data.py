@@ -119,6 +119,7 @@ def create_df(datafile_datetime):
 N = 15 # nombre de fichiers à lire en meme temps
 L = len(datafiles_datetimes) # nombre total de fichiers a lire
 
+i = 0
 while i < L:
     # indices de depart et de fin
     # (l'indice de fin est exclu)
