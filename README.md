@@ -66,6 +66,7 @@ export SPARK_DRIVER_MEMORY="2G"
 export AWS_ACCESS_KEY_ID=your_access_key
 export AWS_SECRET_ACCESS_KEY=your_secret_key
 export PYSPARK_WORKER_PYTHON=/home/ubuntu/anaconda2/bin/python
+export PYSPARK_PYTHON=/home/ubuntu/anaconda2/bin/python
 export PYSPARK_DRIVER_PYTHON=/home/ubuntu/anaconda2/bin/ipython
 export PYSPARK_DRIVER_PYTHON_OPTS="notebook"
 ```
