@@ -4,11 +4,15 @@
 
 # ## Chargement des données
 
-from time import time
-from pyspark.sql import SQLContext
-from boto.s3.connection import S3Connection
 import pandas as pd
 import re
+from time import time
+from boto.s3.connection import S3Connection
+from pyspark import SparkContext, SparkConf
+from pyspark.sql import SQLContext
+
+conf = SparkConf().setAppName("Chargement des donnees par batch de 15")
+sc = SparkContext(conf=conf)
 sql = SQLContext(sc)
 
 
