@@ -44,3 +44,7 @@ Chargement du fichier 1 : 0.179548978806 secondes.
 Chargement du fichier 2 : 0.197256088257 secondes.
 Chargement du fichier 3 : 1621.57418489 secondes.
 Ecriture de la dataframe de 10 fichiers 3 : 1621.57418489 secondes.Temps total pour 10 fichiers : 27.0 minutes 2.18246603012 secondes
+
+ [TEST] Lecture et écritures des fichiers 0 à 19 en 0.0 heures 0.0 minutes et 8.79574513435 secondes.
+
+ [TEST] Lecture et écritures des fichiers 0 à 19 en 1.0 heures 25.0 minutes et 31.7507328987 secondes.
