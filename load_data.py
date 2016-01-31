@@ -129,8 +129,9 @@ while i < L:
     df = sql.createDataFrame(rdd2, 
             ['projectcode', 'page', 'views', 'day', 'hour'])
     # Ecriture dans cassandra
-    df.write.format("org.apache.spark.sql.cassandra").    
-        options(table="wikipediadata", keyspace="projet").save(mode="append")
+    df.write.format("org.apache.spark.sql.cassandra").\
+            options(table="wikipediadata", keyspace="projet").\
+            save(mode="append")
     # Calcul et log du temps ecoule
     t1 = time()
     total = t1 - t0
