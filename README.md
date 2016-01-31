@@ -40,35 +40,45 @@ Cf. http://docs.datastax.com/en/datastax_enterprise/4.8/datastax_enterprise/inst
 Ajouter 8080 pour Zeppelin
 
 
+### Variables utiles
+On les définit dans un fichier **projet-env.sh** qui a cette forme:
+```
+KEYFILE=ProjetNoSQL.pem
+chmod 400 $KEYFILE
+MASTER_DNS=ec2-54-165-93-154.compute-1.amazonaws.com
+WORKER1_DNS=ec2-54-152-112-206.compute-1.amazonaws.com
+WORKER2_DNS=
+WORKER3_DNS=
+WORKER4_DNS=
+```
+
+Par ailleurs on configure le fichier **spark-env.sh** que l'on aura au préalable éventuellement téléchargé depuis l'un des noeuds:
+```
+scp -i $KEYFILE ubuntu@$MASTER_DNS:/etc/dse/spark/spark-env.sh spark-env.sh.template
+```
+
+On modifie / ajoute les lignes suivantes (on veut augmenter les ressources allouées à Spark) :
+```bash
+export SPARK_WORKER_INSTANCES=3
+export SPARK_WORKER_MEMORY="3G"
+export SPARK_WORKER_CORES=1
+export SPARK_DRIVER_MEMORY="2G"
+export AWS_ACCESS_KEY_ID=your_access_key
+export AWS_SECRET_ACCESS_KEY=your_secret_key
+export PYSPARK_WORKER_PYTHON=/home/ubuntu/anaconda2/bin/python
+export PYSPARK_DRIVER_PYTHON=/home/ubuntu/anaconda2/bin/ipython
+export PYSPARK_DRIVER_PYTHON_OPTS="notebook"
+```
+
 ### Commandes utiles
 Se connecter en ssh
 ```
-KEYFILE=cluster.pem
-chmod 400 $KEYFILE
-MASTER_DNS=ec2-54-165-93-154.compute-1.amazonaws.com
-WORKER_DNS=ec2-54-152-112-206.compute-1.amazonaws.com
+source projet-env.sh
 ssh -i $KEYFILE ubuntu@$MASTER_DNS
-ssh -i $KEYFILE ubuntu@$WORKER_DNS
+ssh -i $KEYFILE ubuntu@$WORKER1_DNS
 ```
 
-### Charger les données
-Cf. https://drive.google.com/file/d/0B9Ikx0xPv9gJczJEdlptVGNWcVU/view
-```
-AWS_ACCESS_KEY_ID=XXX
-AWS_SECRET_ACCESS_KEY=XXX
-wget http://s3.amazonaws.com/ec2-downloads/ec2-api-tools.zip
-unzip ec2-api-tools.zip
-export PATH=$PATH:/home/ubuntu/ec2-api-tools-1.7.5.1/bin
-export EC2_HOME=/home/ubuntu/ec2-api-tools-1.7.5.1
-ec2-create-volume --snapshot snap-f57dec9a -z us-east-1a -O $AWS_ACCESS_KEY_ID -W $AWS_SECRET_ACCESS_KEY
-```
 
-Noter le volume_id. Puis:
-```
-VOLUME_ID=vol-ce72716e 
-INSTANCE_ID=i-dc691f55
-ec2-attach-volume $VOLUME_ID -i $INSTANCE_ID -d /dev/sdf -O $AWS_ACCESS_KEY_ID -W $AWS_SECRET_ACCESS_KEY
-```
 
 ### Config SPARK
 On veut augmenter les ressources allouées à SPARK.   
@@ -76,9 +86,10 @@ On veut augmenter les ressources allouées à SPARK.
 On envoit le fichier de configuration à **tous** les noeuds et on 
 relance les workers spark:
 ```
-for DNS in $MASTER_DNS $WORKER_DNS
+for DNS in $MASTER_DNS $WORKER1_DNS $WORKER2_DNS $WORKER3_DNS $WORKER4_DNS
 do
 scp -i $KEYFILE spark-env.sh ubuntu@$DNS:/home/ubuntu/
+ssh -i $KEYFILE ubuntu@$DNS sudo mv /etc/dse/spark/spark-env.sh spark-env.sh /etc/dse/spark/spark-env.sh.original 
 ssh -i $KEYFILE ubuntu@$DNS sudo cp spark-env.sh /etc/dse/spark/
 ssh -i $KEYFILE ubuntu@$DNS dsetool sparkworker restart
 done
@@ -86,50 +97,69 @@ done
 
 
 
-
-
 ### Jupyter Notebook
-Telechargement d'Anaconda (Accepter les divers termes) et installation sur **tous** les noeuds.
+Telechargement d'Anaconda et installation sur **tous** les noeuds.
+```bash
+for DNS in $MASTER_DNS $WORKER1_DNS $WORKER2_DNS $WORKER3_DNS $WORKER4_DNS
+do
+ssh -i $KEYFILE ubuntu@$DNS wget https://3230d63b5fc54e62148e-c95ac804525aac4b6dba79b00b39d1d3.ssl.cf1.rackcdn.com/Anaconda2-2.4.1-Linux-x86_64.sh
+ssh -i $KEYFILE ubuntu@$DNS bash Anaconda2-2.4.1-Linux-x86_64.sh -b
+ssh -i $KEYFILE ubuntu@$DNS 'echo export PATH=/home/ubuntu/anaconda2/bin:$PATH >> /home/ubuntu/.bashrc'
+ssh -i $KEYFILE ubuntu@$DNS "~/anaconda2/bin/pip install cassandra-driver"
+done
 ```
-wget https://3230d63b5fc54e62148e-c95ac804525aac4b6dba79b00b39d1d3.ssl.cf1.rackcdn.com/Anaconda2-2.4.1-Linux-x86_64.sh
-bash Anaconda2-2.4.1-Linux-x86_64.sh -b
-echo export PATH=/home/ubuntu/anaconda2/bin/:$PATH >> /home/ubuntu/.bashrc
-source ~/.bashrc
-pip install cqlsh
+
+Sur le noeud MASTER, effectuer les commandes suivantes pour paramétrer Jupyter.
+
+
+Se connecter au MASTER:
+```bash
+ssh -i $KEYFILE ubuntu@$MASTER_DNS
 ```
+
 Verifier la version de python
-```
+```bash
 which python
 which ipython
 ```
+
 Si, le chemin ne liste pas ".../anaconda2/...", utilisez cette commande
-```
+```bash
 source .bashrc
 ```
+
 Creation d'un mote de passe, (copier le mdp: sha1:....)
-```
+```bash
 ipython
-In [1]:from IPython.lib import passwd
-In [2]:passwd()
 ```
+
+```python
+from IPython.lib import passwd
+passwd()
+exit
+```
+
 Creation de la config de jupyter
+```bash
+jupyter notebook --generate-config
 ```
-$ jupyter notebook --generate-config
-```
+
 Creation du certificat
+```bash
+mkdir certs
+cd certs
+sudo openssl req -x509 -nodes -days 365 -newkey rsa:1024 -keyout mycert.pem -out mycert.pem
 ```
-$ mkdir certs
-$ cd certs
-$ sudo openssl req -x509 -nodes -days 365 -newkey rsa:1024 -keyout mycert.pem -out mycert.pem
-```
+
 Accéder au config
+```bash
+cd ~/.jupyter/
+vim jupyter_notebook_config.py
 ```
-$ cd ~/.jupyter/
-$ vi jupyter_notebook_config.py
-```
+
 Ajouter ce texte dans le document(ne pas oublier le mdp et le port)
 
-```
+```python
 c = get_config()
 
 # Kernel config
@@ -139,47 +169,28 @@ c.IPKernelApp.pylab = 'inline'  # if you want plotting support always in your no
 c.NotebookApp.certfile = u'/home/ubuntu/certs/mycert.pem' #location of your certificate file
 c.NotebookApp.ip = '*'
 c.NotebookApp.open_browser = False  #so that the ipython notebook does not opens up a browser by default
-c.NotebookApp.password = u'sha1:68c136a5b064...'  #the encrypted password we generated above
+c.NotebookApp.password = u'sha1:55c7434ac834:516251f1633a2abb54d1ac671e878f609b9a3548'  #the encrypted password we generated above
 # It is a good idea to put it on a known, fixed port
 c.NotebookApp.port = 8889
 ```
 
-Creation du dossier de notebook
-```
-$ cd ~
-$ mkdir Notebooks
-$ cd Notebooks
+On clone le repository git pour faciliter la synchronisation
+```bash
+cd
+git clone https://github.com/cygilbert/projetnosql.git
+cd projetnosql
 ```
 
-Lancement du notebook (ecrivez https a lieu de http)
-```
+Lancement du notebook (écrivez https a lieu de http)
+```bash
 source ~/.bashrc
-PYSPARK_WORKER_PYTHON=python PYSPARK_DRIVER_PYTHON=ipython PYSPARK_DRIVER_PYTHON_OPTS="notebook" nohup dse pyspark --driver-memory 4G  --executor-memory 3G &
+nohup dse pyspark --driver-memory 1G  --executor-memory 3G &
+
+nohup dse pyspark &
 ```
 
 Pour arrêter, killer le process dont on trouve l'ID par :
-```
+```bash
 lsof nohup.out
 ```
 
-
-
-Lancer le shell Cassandra :
-```
-export PATH=/usr/bin/:$PATH
-cqlsh
-```
-
-
-Commandes Cassandra pour créer la table:
-```
-create keyspace projet WITH REPLICATION = { 'class' : 'SimpleStrategy', 'replication_factor' : 2 };
-use projet;
-create table projet.wikidata (datetime timestamp, page text, projectcode text, views bigint, PRIMARY KEY (datetime, page, projectcode)) ;
-```
-
-Quitter le shell et re-binder le PATH python to Anaconda
-```
-exit
-source /home/ubuntu/.bashrc
-```
