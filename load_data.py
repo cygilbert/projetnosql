@@ -112,7 +112,7 @@ def create_df(datafile_datetime):
 
 
 # Constantes du script:
-N = 10 # nombre de fichiers à lire en meme temps
+N = 15 # nombre de fichiers à lire en meme temps
 L = len(datafiles_datetimes) # nombre total de fichiers a lire
 
 while i < L:
