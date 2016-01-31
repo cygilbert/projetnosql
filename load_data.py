@@ -104,7 +104,7 @@ def create_df(datafile_datetime):
     datafile_datetime : 2-tuple with the filename and the date time
     '''
     datafile, (day, hour) = datafile_datetime
-    df = read_csv(datafile, sep=' ', compression='gzip', engine='c', header=None, 
+    df = pd.read_csv(datafile, sep=' ', compression='gzip', engine='c', header=None, 
                      names=['projectcode', 'page', 'views'], usecols=[0, 1, 2], 
                      na_values=None, keep_default_na=False,
                      dtype={'projectcode': pd.np.str, 'page': pd.np.str, 'views': pd.np.int64})
