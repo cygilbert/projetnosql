@@ -17,7 +17,7 @@ sql = SQLContext(sc)
 
 
 # Constantes du script:
-N = 30 # nombre de fichiers à lire en meme temps
+N = 15 # nombre de fichiers à lire en meme temps
 I0 = 15 # premier fichier à lire
 
 # On récupère la liste des fichiers
