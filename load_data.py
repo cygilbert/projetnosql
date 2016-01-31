@@ -18,6 +18,7 @@ sql = SQLContext(sc)
 
 # Constantes du script:
 N = 30 # nombre de fichiers à lire en meme temps
+I0 = 15 # premier fichier à lire
 
 # On récupère la liste des fichiers
 
@@ -124,14 +125,14 @@ def create_df(datafile_datetime):
 
 
 L = len(datafiles_datetimes) # nombre total de fichiers a lire
-i = 0
+i = I0
 while i < L:
     # indices de depart et de fin
     # (l'indice de fin est exclu)
     first = i
     last = min(L, i+N)
     i += N
-    
+     
     t0 = time()
     # Lecture des fichiers
     rdd = sc.parallelize(datafiles_datetimes[first:last], N)
