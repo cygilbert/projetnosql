@@ -116,7 +116,7 @@ def create_df(datafile_datetime):
     # on supprime les pages non-wikipedia
     # on supprime les pages avec 1 seule vue (puisqu'on veut le trend, 1 et
     # 0 ce n'est pas très différent)
-    df = df[(df.views > 1) & (~ df.projectcode.str.contains('\.'))]
+    df = df[(df.views > 5) & (~ df.projectcode.str.contains('\.'))]
     df['day'] = day
     df['hour'] = hour
     return df.values.tolist()
