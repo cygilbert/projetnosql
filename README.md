@@ -90,10 +90,10 @@ relance les workers spark:
 ```bash
 for DNS in $MASTER_DNS $WORKER1_DNS $WORKER2_DNS $WORKER3_DNS $WORKER4_DNS
 do
-scp -i $KEYFILE spark-env.sh ubuntu@$DNS:/home/ubuntu/
-ssh -i $KEYFILE ubuntu@$DNS sudo mv /etc/dse/spark/spark-env.sh spark-env.sh /etc/dse/spark/spark-env.sh.original 
-ssh -i $KEYFILE ubuntu@$DNS sudo cp spark-env.sh /etc/dse/spark/
-ssh -i $KEYFILE ubuntu@$DNS dsetool sparkworker restart
+#scp -i $KEYFILE spark-env.sh ubuntu@$DNS:/home/ubuntu/
+#ssh -i $KEYFILE ubuntu@$DNS sudo mv /etc/dse/spark/spark-env.sh spark-env.sh /etc/dse/spark/spark-env.sh.original 
+#ssh -i $KEYFILE ubuntu@$DNS sudo cp spark-env.sh /etc/dse/spark/
+ssh -i $KEYFILE ubuntu@$DNS "nohup dsetool sparkworker restart &"
 done
 ```
 
@@ -197,7 +197,7 @@ kill 6351
 Pour lancer un script:
 ```bash
 SCRIPT=/home/ubuntu/projetnosql/load_data.py
-nohup dse spark-submit --driver-memory 2G  --executor-memory 3G  $SCRIPT &
+nohup dse spark-submit --driver-memory 2G  --executor-memory 8G  $SCRIPT &
 ```
 
 ### Updating replication factor

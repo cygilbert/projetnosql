@@ -11,14 +11,15 @@ from boto.s3.connection import S3Connection
 from pyspark import SparkContext, SparkConf
 from pyspark.sql import SQLContext
 
-conf = SparkConf().setAppName("Chargement des donnees par batch de 15")
+conf = SparkConf().setAppName("Chargement des donnees par batch de 25")
 sc = SparkContext(conf=conf)
 sql = SQLContext(sc)
 
 
 # Constantes du script:
-N = 15 # nombre de fichiers à lire en meme temps
-I0 = 390 # premier fichier à lire
+W = 5 # nombre de workers (et donc de partitions de la liste de fichiers)
+N = 25 # nombre de fichiers à lire en meme temps
+I0 = 510 # premier fichier à lire
 
 # On récupère la liste des fichiers
 
@@ -134,7 +135,7 @@ while i < L:
      
     t0 = time()
     # Lecture des fichiers
-    rdd = sc.parallelize(datafiles_datetimes[first:last], N)
+    rdd = sc.parallelize(datafiles_datetimes[first:last], W)
     rdd2 = rdd.flatMap(create_df)
     df = sql.createDataFrame(rdd2, 
             ['projectcode', 'page', 'views', 'day', 'hour'])
@@ -149,7 +150,7 @@ while i < L:
     h = m // 60
     m = m % 60
     s = total % 60
-    with open("log_time", "a") as f:
+    with open("/home/ubuntu/projetnosql/log_time", "a") as f:
         f.write('\nLecture et écritures des fichiers {}'
                 'à {} en {} heures {} minutes et {:.0f} secondes.\n'.
                 format(first, last-1, h, m, s))
