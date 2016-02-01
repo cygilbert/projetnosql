@@ -11,15 +11,15 @@ from boto.s3.connection import S3Connection
 from pyspark import SparkContext, SparkConf
 from pyspark.sql import SQLContext
 
-conf = SparkConf().setAppName("Chargement des donnees par batch de 25")
+conf = SparkConf().setAppName("Chargement des donnees par batch de 5")
 sc = SparkContext(conf=conf)
 sql = SQLContext(sc)
 
 
 # Constantes du script:
 W = 5 # nombre de workers (et donc de partitions de la liste de fichiers)
-N = 25 # nombre de fichiers à lire en meme temps
-I0 = 510 # premier fichier à lire
+N = 5 # nombre de fichiers à lire en meme temps
+I0 = 635 # premier fichier à lire
 
 # On récupère la liste des fichiers
 
