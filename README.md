@@ -191,10 +191,33 @@ nohup dse pyspark --driver-memory 1G  --executor-memory 3G &
 Pour arrêter, killer le process dont on trouve l'ID par :
 ```bash
 lsof nohup.out
-kill 23158
+kill 6351
 ```
 
 Pour lancer un script:
 ```bash
-nohup dse spark-sparksubmit --driver-memory 1G  --executor-memory 3G &
+SCRIPT=/home/ubuntu/projetnosql/load_data.py
+nohup dse spark-submit --driver-memory 2G  --executor-memory 3G  $SCRIPT &
 ```
+
+### Updating replication factor
+Lancer cqlsh
+```bash
+cqlsh
+```
+
+Mettre à jour le keyspace :
+```sql
+ALTER KEYSPACE "projet" WITH REPLICATION =
+  { 'class' : 'SimpleStrategy', 'replication_factor' : 1 };
+```
+
+Puis lancer le repair sur tous les noeuds:
+```bash
+for DNS in $MASTER_DNS $WORKER1_DNS $WORKER2_DNS $WORKER3_DNS $WORKER4_DNS
+do
+ssh -i $KEYFILE ubuntu@$DNS "nohup nodetool repair &"
+done
+
+```
+
