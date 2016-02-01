@@ -18,7 +18,7 @@ sql = SQLContext(sc)
 
 # Constantes du script:
 N = 15 # nombre de fichiers à lire en meme temps
-I0 = 15 # premier fichier à lire
+I0 = 390 # premier fichier à lire
 
 # On récupère la liste des fichiers
 
@@ -113,9 +113,9 @@ def create_df(datafile_datetime):
                      na_values=None, keep_default_na=False,
                      dtype={'projectcode': pd.np.str, 'page': pd.np.str, 'views': pd.np.int64})
     # on supprime les pages non-wikipedia
-    df = df[(~ df.projectcode.str.contains('\.')) & (df.views > 1)]
     # on supprime les pages avec 1 seule vue (puisqu'on veut le trend, 1 et
     # 0 ce n'est pas très différent)
+    df = df[(df.views > 1) & (~ df.projectcode.str.contains('\.'))]
     df['day'] = day
     df['hour'] = hour
     return df.values.tolist()
@@ -151,5 +151,5 @@ while i < L:
     s = total % 60
     with open("log_time", "a") as f:
         f.write('\nLecture et écritures des fichiers {}'
-                'à {} en {} heures {} minutes et {} secondes.\n'.
+                'à {} en {} heures {} minutes et {:.0f} secondes.\n'.
                 format(first, last-1, h, m, s))
