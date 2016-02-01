@@ -19,7 +19,7 @@ sql = SQLContext(sc)
 # Constantes du script:
 W = 5 # nombre de workers (et donc de partitions de la liste de fichiers)
 N = 5 # nombre de fichiers à lire en meme temps
-I0 = 635 # premier fichier à lire
+I0 = 740 # premier fichier à lire
 
 # On récupère la liste des fichiers
 
