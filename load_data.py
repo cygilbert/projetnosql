@@ -19,7 +19,7 @@ sql = SQLContext(sc)
 # Constantes du script:
 W = 5 # nombre de workers (et donc de partitions de la liste de fichiers)
 N = 5 # nombre de fichiers à lire en meme temps
-I0 = 740 # premier fichier à lire
+I0 = 1965 # premier fichier à lire
 
 # On récupère la liste des fichiers
 
@@ -29,6 +29,10 @@ bucket = conn.get_bucket('telecom-bigdata-2016')
 keys = bucket.list('projet/pagecounts')
 datafiles = ['s3n://telecom-bigdata-2016/{}'.format(key.name) for key in keys]
 
+# Le fichier n° 1966, 's3n://telecom-bigdata-2016/projet/pagecounts-20110323-220000.gz' est corrompu
+# On le remplace par la version web : http://dumps.wikimedia.org/other/pagecounts-raw/2011/2011-03/pagecounts-20110323-220000.gz
+
+datafiles[1966] = 'http://dumps.wikimedia.org/other/pagecounts-raw/2011/2011-03/pagecounts-20110323-220000.gz'
 
 # In[17]:
 
