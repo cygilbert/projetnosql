@@ -1,0 +1,50 @@
+{% extends "layout.html" %}
+{% block head %}
+  {{ super() }}
+  <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='bootstrap-3.3.6-dist/css/signin.css') }}">
+{% endblock %}
+{% block content %}
+
+<div class="container">
+<br/><br/>
+  <form class="form-signin" method="post" action="{{ url_for('form_action_day') }}">
+    <div class="form-group">
+      <label for="day">Day: </label>
+      <div class='input-group date' id='datetimepicker1'>
+          <input type='text' class="form-control" name='day' />
+          <span class="input-group-addon">
+              <span class="glyphicon glyphicon-calendar"></span>
+          </span>
+      </div>
+    </div>
+
+    <div class="radio">
+      <label>
+        <input type="radio" name="date" id="period" value="30" checked>
+        30 days trending
+      </label>
+    </div>
+    <div class="radio">
+      <label>
+        <input type="radio" name="date" id="day" value="day">
+        24 hours tranding
+      </label>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Get your data</button>
+  </form>
+
+
+  <script type="text/javascript">
+            $(function () {
+                $('#datetimepicker1').datetimepicker({
+                  format: 'DD/MM/YYYY',
+                  minDate: "01/1/2011",
+                  maxDate: "03/31/2011"
+                });
+            });
+        </script>
+</div>
+
+
+{% endblock %}
