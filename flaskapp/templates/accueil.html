@@ -48,6 +48,14 @@
 	  text-align: center;
 	}
 
+	.url_template {
+		padding: 70px 300px;
+	}
+
+	.url_template a{
+		font-size: 20px;
+	}
+
 	.function-template ul li{
 	  background: #ababab !important;
 	}
@@ -107,13 +115,25 @@
 		</div>
 	</div>
 	<div class="section" id="section1">
-	    <div class="slide" id="slide1">
+		<div class="slide" id="slide1">
+	    	<h1>URL</h1>
+	    	<div class="url_template">
+	    		<h2>OpsCenter</h2>
+		    	<a href="http://ec2-54-164-153-47.compute-1.amazonaws.com:8888/opscenter/index.html">ec2-54-164-153-47.compute-1.amazonaws.com:8888/opscenter/index.html</a>
+
+		    	<h2>Spark Master</h2>
+
+		    	<a href="http://ec2-52-90-65-200.compute-1.amazonaws.com:7080/">http://ec2-52-90-65-200.compute-1.amazonaws.com:7080/</a>
+	    	</div>
+	    </div>
+
+	    <div class="slide" id="slide2">
 	    	<h1>Architecture</h1>
 	    	<div class="box">
 				<img src="{{ url_for('static',filename='imgs/spark_integration.png') }}" alt="Spark Cassandra" style="width:730px;height:333px;">
 			</div>
 	    </div>
-	    <div class="slide" id="slide2">
+	    <div class="slide" id="slide3">
 	    	<h1>Softwares</h1>
 	    	<div class="soft-template">
 		    	<ul class="list-group">
@@ -130,17 +150,14 @@
 			<h1>Cassandra table & PreProcessing</h1>
 			<h2>Table structure</h2>
 			<div class="team-template">
-			<div class="team-template">
-                        <table class="table table-bordered">
-                                <tr>
-                                        <td rowspan=3 >Day</td>
-                                        <td >Hour</td>
-                                        <td rowspan=3 >View</td>
-                                </tr>
-                                <tr><td>Project Code</td></tr>
-                                <tr><td>Page Name</td></tr>
-                        </table>
-                        </div>
+                    <table class="table table-bordered">
+                            <tr>
+                                    <td rowspan=3 >(Project Code, Page Name)</td>
+                                    <td >Day</td>
+                                    <td rowspan=3 >Views</td>
+                            </tr>
+                            <tr><td>Hour</td></tr>
+                    </table>
 			</div>
 
 			<h2>Filtering</h2>
@@ -155,14 +172,14 @@
 			<h2>Example</h2>
 			<div class="team-template">
 			<table class="table table-bordered">
-				<tr>
-					<td rowspan=3 >1</td>
-					<td >22</td>
-					<td rowspan=3 >50</td>
-				</tr>
-				<tr><td>en</td></tr>
-				<tr><td>Barrack</td></tr>
-			</table>
+                    <tr>
+                            <td rowspan=3 >(en, Barrack)</td>
+                            <td >1</td>
+                            <td rowspan=3 >50</td>
+                    </tr>
+                    <tr><td>22</td></tr>
+
+            </table>
 			</div>
 		</div>
 	</div>
@@ -171,7 +188,7 @@
 		<div class="function-template">
 			<ul class="list-group">
 			    <li class="list-group-item">Request a 30 days trendings</li>
-			    <li class="list-group-item">Request a 30 days trendings</li>
+			    <li class="list-group-item">Request a 24 hours trendings</li>
 			    <li class="list-group-item">
 			        <ul class="list-group">
 			            <li class="list-group-item">Database content</li>
@@ -185,7 +202,7 @@
 <script type="text/javascript">
 		$(document).ready(function() {
 			$('#fullpage').fullpage({
-				sectionsColor: ['#9e9e9e', '#9e9e9e', '#9e9e9e', '#9e9e9e'],
+				sectionsColor: ['#9e9e9e', '#9e9e9e', '#9e9e9e', '#9e9e9e', '#9e9e9e'],
        			css3: true
        		});
 		});
