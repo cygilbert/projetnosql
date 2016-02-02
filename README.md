@@ -263,6 +263,10 @@ sys.path.insert(0, '/var/www/html/flaskapp')
 
 from flaskapp import app as application
 ```
+Change the wsgi file permission, so apache can access it
+```
+$ sudo chmod o+x flaskapp.wsgi
+```
 Edit the file: /etc/apache2/sites-enabled/000-default.conf and insert this text just after DocumentRoot /var/www/html
 ```
 WSGIDaemonProcess flaskapp threads=5
@@ -276,7 +280,12 @@ WSGIScriptAlias / /var/www/html/flaskapp/flaskapp.wsgi
 </Directory>
 ```
 Restart the server
-```
+```bash
 $ sudo apachectl restart
 ```
 Go to the Master DNS to see the result
+
+To see the log errors
+```
+$ vi /var/log/apache2/error.log
+```
