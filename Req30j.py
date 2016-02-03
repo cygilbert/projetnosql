@@ -11,7 +11,7 @@ import pyspark.sql.functions as F
 from pyspark.sql.types import FloatType
 
 
-conf = SparkConf().setAppName("Calcul trends 24h")
+conf = SparkConf().setAppName("Calcul trends 30j")
 sc = SparkContext(conf=conf)
 hc = HiveContext(sc)
 
