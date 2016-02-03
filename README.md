@@ -185,7 +185,7 @@ cd projetnosql
 
 Lancement du notebook (écrivez https a lieu de http)
 ```bash
-nohup dse pyspark --driver-memory 1G  --executor-memory 3G &
+nohup dse pyspark --driver-memory 2G  --executor-memory 8G &
 ```
 
 Pour arrêter, killer le process dont on trouve l'ID par :
@@ -221,3 +221,7 @@ done
 
 ```
 
+### Copier log_time en local
+```bash
+scp -i $KEYFILE ubuntu@$MASTER_DNS:/home/ubuntu/projetnosql/log_time .
+```
