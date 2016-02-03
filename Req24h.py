@@ -74,7 +74,7 @@ def compute(day):
 
 
 for day in range(89, -1, -1):
-    if os.path.exists(filename(day):
+    if os.path.exists(filename(day)):
         with open('/home/ubuntu/projetnosql/log_time', 'a') as f:
             f.write('\nFile {} already exists, skip day {}' \
                  .format(filename(day), day))
