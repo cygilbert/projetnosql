@@ -1,0 +1,196 @@
+{% extends "layout.html" %}
+
+{% block head %}
+{{ super() }}
+<style>
+		.popover{
+	    width:10000px;   
+    }
+	</style>
+{% endblock %}
+{% block content %} 
+
+
+<div class="container">
+    <h2>Dashboard</h2>
+  <p></p>            
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Rank</th>
+        <th>View</th>
+        <th>Name Page</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+        
+        
+      <tr>
+        <td>{{rank1}}</td>
+        <td>{{view1}}</td>
+        <td>{{name1}}</td>
+        <td>
+            <div class="btn-group">
+                
+                <button type="button" data-toggle="sumup" class="btn btn-primary" title="Sum up" data-trigger="focus" data-content="{{sumup1}}">
+                    <span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span>                
+                </button>
+                
+                <button type="button" class="btn btn-primary" data-toggle="graph" data-trigger="focus" aria-label="Left Align">
+                          <span class="glyphicon glyphicon-stats" aria-hidden="true"></span>
+                    
+                    <script>
+                        var image = '<embed type="image/svg+xml" src={{trend1|safe}} style="max-width:10000px"/>';
+                        $('[data-toggle="graph"]').popover({placement: 'bottom', content: image, html: true});
+                    </script>  
+                </button>
+                </div>
+
+            
+            
+            </td>    
+      </tr>
+        
+        
+       <tr>
+        <td>{{rank1}}</td>
+        <td>{{view1}}</td>
+        <td>{{name1}}</td>
+        <td>
+            <div class="btn-group">
+                
+                <button type="button" data-toggle="sumup" class="btn btn-primary" title="Sum up" data-trigger="focus" data-content="{{sumup1}}">
+                    <span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span>                
+                </button>
+                
+                <button type="button" class="btn btn-primary" data-toggle="graph" data-trigger="focus" aria-label="Left Align">
+                          <span class="glyphicon glyphicon-stats" aria-hidden="true"></span>
+                    
+                    <script>
+                        var image = '<embed type="image/svg+xml" src={{trend1|safe}} style="max-width:10000px"/>';
+                        $('[data-toggle="graph"]').popover({placement: 'bottom', content: image, html: true});
+                    </script>  
+                </button>
+                </div>
+
+            
+            
+            </td>    
+      </tr>
+        
+        
+      <tr>
+        <td>{{rank1}}</td>
+        <td>{{view1}}</td>
+        <td>{{name1}}</td>
+        <td>
+            <div class="btn-group">
+                
+                <button type="button" data-toggle="sumup" class="btn btn-primary" title="Sum up" data-trigger="focus" data-content="{{sumup1}}">
+                    <span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span>                
+                </button>
+                
+                <button type="button" class="btn btn-primary" data-toggle="graph" data-trigger="focus" aria-label="Left Align">
+                          <span class="glyphicon glyphicon-stats" aria-hidden="true"></span>
+                    
+                    <script>
+                        var image = '<embed type="image/svg+xml" src={{trend1|safe}} style="max-width:10000px"/>';
+                        $('[data-toggle="graph"]').popover({placement: 'bottom', content: image, html: true});
+                    </script>  
+                </button>
+                </div>
+
+            
+            
+            </td>    
+      </tr>
+        
+        
+       <tr>
+        <td>{{rank1}}</td>
+        <td>{{view1}}</td>
+        <td>{{name1}}</td>
+        <td>
+            <div class="btn-group">
+                
+                <button type="button" data-toggle="sumup" class="btn btn-primary" title="Sum up" data-trigger="focus" data-content="{{sumup1}}">
+                    <span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span>                
+                </button>
+                
+                <button type="button" class="btn btn-primary" data-toggle="graph" data-trigger="focus" aria-label="Left Align">
+                          <span class="glyphicon glyphicon-stats" aria-hidden="true"></span>
+                    
+                    <script>
+                        var image = '<embed type="image/svg+xml" src={{trend1|safe}} style="max-width:10000px"/>';
+                        $('[data-toggle="graph"]').popover({placement: 'bottom', content: image, html: true});
+                    </script>  
+                </button>
+                </div>
+
+            
+            
+            </td>    
+      </tr>
+        
+        
+       <tr>
+        <td>{{rank1}}</td>
+        <td>{{view1}}</td>
+        <td>{{name1}}</td>
+        <td>
+            <div class="btn-group">
+                
+                <button type="button" data-toggle="sumup" class="btn btn-primary" title="Sum up" data-trigger="focus" data-content="{{sumup1}}">
+                    <span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span>                
+                </button>
+                
+                <button type="button" class="btn btn-primary" data-toggle="graph" data-trigger="focus" aria-label="Left Align">
+                          <span class="glyphicon glyphicon-stats" aria-hidden="true"></span>
+                    
+                    <script>
+                        var image = '<embed type="image/svg+xml" src={{trend1|safe}} style="max-width:10000px"/>';
+                        $('[data-toggle="graph"]').popover({placement: 'bottom', content: image, html: true});
+                    </script>  
+                </button>
+                </div>
+
+            
+            
+            </td>    
+      </tr>
+        
+        
+      <tr>
+        <td>{{rank1}}</td>
+        <td>{{view1}}</td>
+        <td>{{name1}}</td>
+        <td>
+            <div class="btn-group">
+                
+                <button type="button" data-toggle="sumup" class="btn btn-primary" title="Sum up" data-trigger="focus" data-content="{{sumup1}}">
+                    <span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span>                
+                </button>
+                
+                <button type="button" class="btn btn-primary" data-toggle="graph" data-trigger="focus" aria-label="Left Align">
+                          <span class="glyphicon glyphicon-stats" aria-hidden="true"></span>
+                    
+                    <script>
+                        var image = '<embed type="image/svg+xml" src={{trend1|safe}} style="max-width:10000px"/>';
+                        $('[data-toggle="graph"]').popover({placement: 'bottom', content: image, html: true});
+                    </script>  
+                </button>
+                </div>
+            </td>    
+      </tr>
+    </tbody>
+  </table>
+  <script>
+    $(document).ready(function(){
+        $('[data-toggle="sumup"]').popover(); 
+    });
+	</script>
+
+	
+</div>
+{% endblock %}

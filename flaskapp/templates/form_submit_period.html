@@ -1,0 +1,56 @@
+{% extends "layout.html" %}
+{% block head %}
+  {{ super() }}
+  <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='bootstrap-3.3.6-dist/css/signin.css') }}">
+{% endblock %}
+{% block content %}
+
+<div class="container">
+<br/><br/>
+  <form class="form-signin" method="post" action="{{ url_for('form_action_period') }}">
+    <div class="form-group">
+      <label for="date_from">From: </label>
+      <div class='input-group date' id='datetimepicker1' >
+          <input type='text' class="form-control" name='date_from'/>
+          <span class="input-group-addon">
+              <span class="glyphicon glyphicon-calendar"></span>
+          </span>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="date_to">To: </label>
+      <div class='input-group date' id='datetimepicker2' >
+          <input type='text' class="form-control" name='date_to'/>
+          <span class="input-group-addon">
+              <span class="glyphicon glyphicon-calendar"></span>
+          </span>
+      </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Send your dates</button>
+  </form>
+
+
+  <script type="text/javascript">
+        $(function () {
+    $('#datetimepicker1').datetimepicker({
+      format: 'DD/MM/YYYY',
+      defaultDate: "01/1/2011",
+      minDate: "01/1/2011"
+    });
+    $('#datetimepicker2').datetimepicker({
+        format: 'DD/MM/YYYY',
+        maxDate: "03/31/2011"
+        // useCurrent: false //Important! See issue #1075
+    });
+    $("#datetimepicker1").on("dp.change", function (e) {
+        $('#datetimepicker2').data("DateTimePicker").minDate(e.date);
+    });
+    $("#datetimepicker2").on("dp.change", function (e) {
+        $('#datetimepicker1').data("DateTimePicker").maxDate(e.date);
+    });
+});
+    </script>
+</div>
+
+
+{% endblock %}

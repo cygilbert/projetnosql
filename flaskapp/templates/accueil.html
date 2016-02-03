@@ -1,0 +1,211 @@
+{% extends "layout.html" %}
+{% block head %}
+{{super()}}
+
+<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='jquery.fullPage.css') }}" />
+
+
+<script type="text/javascript" src="{{ url_for('static',filename='jquery.fullPage.js') }}"></script>
+<style>
+
+    /* Style for our header texts
+    * --------------------------------------- */
+    h1{
+      font-size: 5em;
+      font-family: arial,helvetica;
+      color: #fff;
+      margin:0;
+      padding:0;
+    }
+
+    /* Centered texts in each section
+    * --------------------------------------- */
+    .section{
+      text-align:center;
+    }
+
+
+    /* Backgrounds will cover all the section
+    * --------------------------------------- */
+    .section{
+      background-size: cover;
+    }
+    .slide{
+      background-size: cover;
+    }
+
+    .team-template {
+	  padding: 40px 90px;
+	  text-align: center;
+	}
+
+	.team-template table tr td{
+	  background: #ababab !important;
+	}
+
+	.function-template {
+	  padding: 90px 300px;
+	  text-align: center;
+	}
+
+	.url_template {
+		padding: 70px 300px;
+	}
+
+	.url_template a{
+		font-size: 20px;
+	}
+
+	.function-template ul li{
+	  background: #ababab !important;
+	}
+
+	.filter_function{
+	  padding: 6px 300px;
+	}
+
+	.filter_function ul li{
+	  background: #ababab !important;
+	}
+
+	.soft-template {
+	  padding: 40px 250px;
+	  text-align: center;
+	}
+
+	.soft-template ul li{
+	  background: #ababab !important;
+	}
+
+	.table tbody tr td {
+	    text-align:center; 
+	    vertical-align:middle;
+	}
+
+</style>
+{% endblock %}
+{% block content %}
+
+
+<div id="fullpage">
+	<div class="section " id="section0">
+		<h1>Team</h1>
+		<div class="team-template">
+			<div class="row placeholders">
+		        <div class="col-xs-6 col-sm-3 placeholder">
+		          <img src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" width="200" height="200" class="img-circle" alt="Generic placeholder thumbnail">
+		          <h4>Cyril Gilbert</h4>
+		        </div>
+
+		        <div class="col-xs-6 col-sm-3 placeholder">
+		          <img src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" width="200" height="200" class="img-circle" alt="Generic placeholder thumbnail">
+		          <h4>Derrick Ho</h4>
+		        </div>
+
+		        <div class="col-xs-6 col-sm-3 placeholder">
+		          <img src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" width="200" height="200" class="img-circle" alt="Generic placeholder thumbnail">
+		          <h4>Olivier Large</h4>
+		        </div>
+
+		        <div class="col-xs-6 col-sm-3 placeholder">
+		          <img src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" width="200" height="200" class="img-circle" alt="Generic placeholder thumbnail">
+		          <h4>Guillaume Mohr</h4>
+		        </div>
+		    </div>
+		</div>
+	</div>
+	<div class="section" id="section1">
+		<div class="slide" id="slide1">
+	    	<h1>URL</h1>
+	    	<div class="url_template">
+	    		<h2>OpsCenter</h2>
+		    	<a href="http://ec2-54-164-153-47.compute-1.amazonaws.com:8888/opscenter/index.html">ec2-54-164-153-47.compute-1.amazonaws.com:8888/opscenter/index.html</a>
+
+		    	<h2>Spark Master</h2>
+
+		    	<a href="http://ec2-52-90-65-200.compute-1.amazonaws.com:7080/">http://ec2-52-90-65-200.compute-1.amazonaws.com:7080/</a>
+	    	</div>
+	    </div>
+
+	    <div class="slide" id="slide2">
+	    	<h1>Architecture</h1>
+	    	<div class="box">
+				<img src="{{ url_for('static',filename='imgs/spark_integration.png') }}" alt="Spark Cassandra" style="width:730px;height:333px;">
+			</div>
+	    </div>
+	    <div class="slide" id="slide3">
+	    	<h1>Softwares</h1>
+	    	<div class="soft-template">
+		    	<ul class="list-group">
+				    <li class="list-group-item">Python</li>
+				    <li class="list-group-item">Anaconda</li>
+				    <li class="list-group-item">Jupyter Notebook</li>
+				    <li class="list-group-item">Flask</li>
+				</ul>
+			</div>
+	    </div>
+	</div>
+	<div class="section " id="section2">
+		<div class="slide" id="slide1">
+			<h1>Cassandra table & PreProcessing</h1>
+			<h2>Table structure</h2>
+			<div class="team-template">
+                    <table class="table table-bordered">
+                            <tr>
+                                    <td rowspan=3 >(Project Code, Page Name)</td>
+                                    <td >Day</td>
+                                    <td rowspan=3 >Views</td>
+                            </tr>
+                            <tr><td>Hour</td></tr>
+                    </table>
+			</div>
+
+			<h2>Filtering</h2>
+			<div class="filter_function">
+			<ul class="list-group">
+			    <li class="list-group-item">Remove non-wikipedia pages</li>
+			    <li class="list-group-item">Filter along views</li>
+			</ul>
+		</div>
+		</div>
+		<div class="slide" id="slide2">
+			<h2>Example</h2>
+			<div class="team-template">
+			<table class="table table-bordered">
+                    <tr>
+                            <td rowspan=3 >(en, Barrack)</td>
+                            <td >1</td>
+                            <td rowspan=3 >50</td>
+                    </tr>
+                    <tr><td>22</td></tr>
+
+            </table>
+			</div>
+		</div>
+	</div>
+	<div class="section " id="section3">
+		<h1>Features</h1>
+		<div class="function-template">
+			<ul class="list-group">
+			    <li class="list-group-item">Request a 30 days trendings</li>
+			    <li class="list-group-item">Request a 24 hours trendings</li>
+			    <li class="list-group-item">
+			        <ul class="list-group">
+			            <li class="list-group-item">Database content</li>
+			            <li class="list-group-item">Wikipedia sum up</li>
+			        </ul>
+			    </li>
+			</ul>																								
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+		$(document).ready(function() {
+			$('#fullpage').fullpage({
+				sectionsColor: ['#9e9e9e', '#9e9e9e', '#9e9e9e', '#9e9e9e', '#9e9e9e'],
+       			css3: true
+       		});
+		});
+	</script>
+{% endblock %}
+

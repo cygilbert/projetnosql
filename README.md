@@ -225,3 +225,72 @@ done
 ```bash
 scp -i $KEYFILE ubuntu@$MASTER_DNS:/home/ubuntu/projetnosql/log_time .
 ```
+
+### Setting flask application
+
+Install apache webserver and mod_wsgi
+```bash
+$ sudo apt-get update
+$ sudo apt-get install apache2
+$ sudo apt-get install libapache2-mod-wsgi
+
+```
+Go to the master DNS to see the homepage
+
+Install Python modules
+```bash
+$ sudo pip install flask
+$ sudo pip install pygal
+$ sudo pip install wikipedia
+
+```
+Create a directory for the Flask app
+```
+$ mkdir ~/flaskapp
+$ sudo ln -sT ~/flaskapp /var/www/html/flaskapp
+```
+Create an flaskapp.py in the flaskapp folder
+```
+from flask import Flask
+app = Flask(__name__)
+
+@app.route('/')
+def hello_world():
+  return 'Hello from Flask!'
+
+if __name__ == '__main__':
+  app.run()
+```
+Create a .wsgi file in the flaskapp folder
+```
+import sys
+sys.path.insert(0, '/var/www/html/flaskapp')
+
+from flaskapp import app as application
+```
+Change the wsgi file permission, so apache can access it
+```
+$ sudo chmod o+x flaskapp.wsgi
+```
+Edit the file: /etc/apache2/sites-enabled/000-default.conf and insert this text just after DocumentRoot /var/www/html
+```
+WSGIDaemonProcess flaskapp threads=5
+WSGIScriptAlias / /var/www/html/flaskapp/flaskapp.wsgi
+
+<Directory flaskapp>
+    WSGIProcessGroup flaskapp
+    WSGIApplicationGroup %{GLOBAL}
+    Order deny,allow
+    Allow from all
+</Directory>
+```
+Restart the server
+```bash
+$ sudo apachectl restart
+```
+Go to the Master DNS to see the result
+
+To see the log errors
+```
+$ vi /var/log/apache2/error.log
+```

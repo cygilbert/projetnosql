@@ -1,0 +1,4 @@
+1) Présentation équipe
+2) Architecture: Aws, Spark, Cassandra, anaconda, jupyter notebook, dse spark-submit
+3) Structure Table et des données (filtrages)
+4) Les fonctionnalités: snippet de code

@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+
+{% block content %} 
+
+
+<div class="container">
+    <div class="row placeholders">
+        <div class="col-xs-6 col-sm-9 placeholder">
+              <embed type="image/svg+xml" src={{graph_data|safe}} style='max-width:1000px'/>
+              
+        </div>
+    </div>
+</div>
+
+{% endblock %}
