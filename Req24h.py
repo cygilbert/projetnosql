@@ -2,11 +2,13 @@
 # coding: utf-8
 
 import time
-from pyspark.sql import SQLContext, Row, HiveContext
+import pandas as pd
+import os
+from pyspark import SparkContext, SparkConf
+from pyspark.sql import HiveContext
 from pyspark.sql.window import Window
 import pyspark.sql.functions as F
 from pyspark.sql.types import FloatType
-import pandas as pd
 
 
 conf = SparkConf().setAppName("Calcul trends 24h")
@@ -15,6 +17,10 @@ hc = HiveContext(sc)
 
 wikipediadata = hc.read.format("org.apache.spark.sql.cassandra") \
         .load(keyspace="projet", table="wikipediadata")
+
+
+def filename(day):
+    return '/home/ubuntu/projetnosql/day_{}_24htrending.csv'.format(day)
 
 
 def compute(day):
@@ -61,13 +67,19 @@ def compute(day):
     df2 = df2.iloc[:, 2:]
     df2 = df2.pivot_table(values='views', columns=['hour'], index=['projectcode', 'page'], fill_value=0)
     df = df.merge(df2, left_on=['projectcode', 'page'], right_index=True)
-    df.to_csv('day_{}_24htrending.csv'.format(day), index=False)
+    df.to_csv(filename(day), index=False)
 
     
 
 
 
 for day in range(89, -1, -1):
+    if os.path.exists(filename(day):
+        with open('/home/ubuntu/projetnosql/log_time', 'a') as f:
+            f.write('\nFile {} already exists, skip day {}' \
+                 .format(filename(day), day))
+        continue
+
     try:
         t0 = time.time()
         compute(day)
