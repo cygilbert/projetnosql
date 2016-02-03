@@ -68,6 +68,9 @@ def compute(day):
     df2 = df2.pivot_table(values='views', columns=['hour'], index=['projectcode', 'page'], fill_value=0)
     df = df.merge(df2, left_on=['projectcode', 'page'], right_index=True)
     df.to_csv(filename(day), index=False)
+    
+    # on vide le cache
+    hc.clearCache()
 
     
 
