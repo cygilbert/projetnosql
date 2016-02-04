@@ -1,1 +1,0 @@
-CREATE TABLE wikidatav2(day timestamp, hour timestamp, page text, projectcode text, views bigint, PRIMARY KEY ((day,hour), page, projectcode)) ;)
