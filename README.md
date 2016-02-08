@@ -9,7 +9,7 @@
 
 ## Contenu GitHub
 
-* install_command: décrit les différentes commandes d'installation utilisé pendant le projet.
+* install_command: décrit les différentes commandes d'installation utilisées pendant le projet.
 * Req24h.py: permet le calcul la tendance de chaque journée.
 * Res30j.py: permet le calcul la tendance sur une période de 30j.
 * add_date.py: ce script rajoute la date dans chaque fichier.
