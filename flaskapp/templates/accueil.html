@@ -93,22 +93,22 @@
 		<div class="team-template">
 			<div class="row placeholders">
 		        <div class="col-xs-6 col-sm-3 placeholder">
-		          <img src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" width="200" height="200" class="img-circle" alt="Generic placeholder thumbnail">
+		          <img src="{{ url_for('static',filename='imgs/download.jpg') }}" width="200" height="200" class="img-circle" alt="Generic placeholder thumbnail">
 		          <h4>Cyril Gilbert</h4>
 		        </div>
 
 		        <div class="col-xs-6 col-sm-3 placeholder">
-		          <img src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" width="200" height="200" class="img-circle" alt="Generic placeholder thumbnail">
+		          <img src="{{ url_for('static',filename='imgs/download (1).jpg') }}" width="200" height="200" class="img-circle" alt="Generic placeholder thumbnail">
 		          <h4>Derrick Ho</h4>
 		        </div>
 
 		        <div class="col-xs-6 col-sm-3 placeholder">
-		          <img src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" width="200" height="200" class="img-circle" alt="Generic placeholder thumbnail">
+		          <img src="{{ url_for('static',filename='imgs/download (2).jpg') }}" width="200" height="200" class="img-circle" alt="Generic placeholder thumbnail">
 		          <h4>Olivier Large</h4>
 		        </div>
 
 		        <div class="col-xs-6 col-sm-3 placeholder">
-		          <img src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" width="200" height="200" class="img-circle" alt="Generic placeholder thumbnail">
+		          <img src="{{ url_for('static',filename='imgs/download (4).jpg') }}" width="200" height="200" class="img-circle" alt="Generic placeholder thumbnail">
 		          <h4>Guillaume Mohr</h4>
 		        </div>
 		    </div>
@@ -120,17 +120,17 @@
 	    	<div class="url_template">
 	    		<h2>OpsCenter</h2>
 		    	<a href="http://ec2-54-164-153-47.compute-1.amazonaws.com:8888/opscenter/index.html">ec2-54-164-153-47.compute-1.amazonaws.com:8888/opscenter/index.html</a>
+                        <h2>Spark Master</h2> 
+		    	<a href="http://ec2-54-173-252-60.compute-1.amazonaws.com:7080/">ec2-54-173-252-60.compute-1.amazonaws.com:7080/</a>
 
-		    	<h2>Spark Master</h2>
-
-		    	<a href="http://ec2-52-90-65-200.compute-1.amazonaws.com:7080/">http://ec2-52-90-65-200.compute-1.amazonaws.com:7080/</a>
-	    	</div>
+		    	<h2>Jupyter Notebook</h2>
+		    	<a href="https://ec2-54-164-153-47.compute-1.amazonaws.com:8889/notebooks/TestReq.ipynb">ec2-54-164-153-47.compute-1.amazonaws.com:8889/notebooks/TestReq.ipynb</a>	</div>
 	    </div>
 
 	    <div class="slide" id="slide2">
 	    	<h1>Architecture</h1>
 	    	<div class="box">
-				<img src="{{ url_for('static',filename='imgs/spark_integration.png') }}" alt="Spark Cassandra" style="width:730px;height:333px;">
+				<img src="{{ url_for('static',filename='imgs/schema_architecture.jpg') }}" alt="Spark Cassandra" style="width:730px;height:333px;">
 			</div>
 	    </div>
 	    <div class="slide" id="slide3">
@@ -179,9 +179,39 @@
                     </tr>
                     <tr><td>22</td></tr>
 
-            </table>
+                        </table>
 			</div>
 		</div>
+ 
+                    <div class="slide" id="slide3">
+                        <h2>Statistique</h2>
+                        <div class="team-template">
+                       
+<h3>Données brute: </h3
+<br/>- 2160 fichiers .gzip
+<br/>/ 1 fichier ~ 70 MB, dézippé ~ 250 MB
+<br/>
+<br/><h3>Structure type d'un fichier :</h3>
+<br/>views = 1 : 63.43%
+<br/>views = 2 : 14.20%
+<br/>views = 3 : 6.32%
+<br/>views = 4 : 3.63%
+<br/>5 <= views < 10 : 6.76%
+<br/>10 <= views < 100 : 5.36%
+<br/>100 <= views : 0.30%
+<br/>
+<br/>Vitesse de chargement pour batches de 5 fichiers (5 workers sur 5 noeuds, 1 fichiers / worker) entre 87 et 135 fichiers / heure
+
+<br/>Temps de chargement total ~ 19h (en réalité plus car test de plusieurs configurations)
+
+<br/>Données sur notre cluster : 100 GB, ~ 20 GB / noeuds (Cf. Opscenter)
+
+<br/>Temps de calcul moyen du trend sur 24h : 5min 2s
+<br/>Temps estimé du calcul pour les 90 jours ~ 9h 
+
+                        
+                        </div>
+                </div>
 	</div>
 	<div class="section " id="section3">
 		<h1>Features</h1>

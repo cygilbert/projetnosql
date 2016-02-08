@@ -1,0 +1,91 @@
+#!/usr/bin/env python
+# -*- coding:utf-8 -*-
+
+from flask import Flask, request, redirect, render_template
+import pygal
+from datetime import date
+from pygal.style import DefaultStyle
+import wikipedia
+import subprocess
+import pandas as pd
+
+app = Flask(__name__)
+
+@app.route('/')
+def index():
+	return render_template('accueil.html')
+
+@app.route('/home')
+def home():
+	return render_template('accueil.html')
+
+@app.route('/team')
+def team():
+    return render_template('team.html')
+
+@app.route('/request_period')
+def form_submit_period():
+	return render_template('form_submit_period.html')
+
+@app.route('/request_day')
+def form_submit_day():
+    return render_template('form_submit_day.html')
+
+# Define a route for the action of the form, for example '/hello/'
+# We are also defining which type of requests this route is 
+# accepting: POST requests in this case
+@app.route('/graph_period/', methods=['POST'])
+def form_action_period():
+    date_from=request.form['date_from']
+    date_to=request.form['date_from']
+
+    graph = pygal.StackedLine(fill=True)
+    graph.title = '% Change Coolness of programming languages over time.'
+    graph.x_labels = ['2011','2012','2013','2014','2015','2016']
+    graph.add('Python',  [15, 31, 89, 200, 356, 900])
+    graph.add('Java',    [15, 45, 76, 80,  91,  95])
+    graph.add('C++',     [5,  51, 54, 102, 150, 201])
+    graph.add('All others combined!',  [5, 15, 21, 55, 92, 105])
+    graph_data = graph.render_data_uri()
+
+
+    return render_template('form_action_period.html', graph_data = graph_data)
+
+@app.route('/graph_day/', methods=['POST'])
+def form_action_day():
+
+    date = request.form['day']
+    period = int(request.form['period'])
+
+    date_split = date.split('/')
+
+    day = int(date_split[0]) - i
+    month = int(date_split[1])
+
+    if month == 2:
+        day += 31
+    elif month == 3:
+        day = day + 31 + 28
+
+    date_from = 0
+    # type = 1 => periode 30 jours
+    if period == 1:
+        date_from = day - 30
+
+    #filePath = '/ubuntu/home/projetnosql/'
+
+    #df = pd.read_csv(filePath+fileName, sep=", ", engine="python", header=None)
+
+    out = "1"
+    err = "toto"
+   
+    return render_template("form_action_day.html", out=out,err=err)
+
+    
+
+    # return render_template('form_action_day.html', name1=name1,sumup1=sumup1,view1=view1,rank1=rank1,trend1=trend1,
+    #     out=day,err=date_from)
+
+
+if __name__ == '__main__':
+    app.run(debug=True)

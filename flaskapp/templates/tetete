@@ -1,0 +1,36 @@
+{% extends "layout.html" %}
+
+{% block head %}
+{{ super() }}
+
+<link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='bootstrap-3.3.6-dist/css/signin.css') }}">
+
+<style>
+	.popover{
+	    width:10000px;   
+    }
+</style>
+{% endblock %}
+{% block content %} 
+
+
+<div class="container">
+    <h2>Dashboard</h2>
+  
+
+
+  begin<br/><br/>
+  {{out}}
+  <br/><br/>
+  then<br/><br/>
+  {{err}}
+  <br/><br/>
+  <script>
+    $(document).ready(function(){
+        $('[data-toggle="sumup"]').popover(); 
+    });
+	</script>
+
+	
+</div>
+{% endblock %}
