@@ -5,7 +5,7 @@
 * Cyril Gilbert
 * Derrick Ho
 * Olivier Large
-* Guillaume Mhor
+* Guillaume Mohr
 
 ## Contenu GitHub
 
